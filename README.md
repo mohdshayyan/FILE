@@ -1,4 +1,4 @@
 # FILE
 CMD to install TABULATE:->
-set TABULATE_INSTALL=lib-only
-pip install tabulate
+1. set TABULATE_INSTALL=lib-only
+2. pip install tabulate
