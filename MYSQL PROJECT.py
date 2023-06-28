@@ -6,20 +6,19 @@
 import pandas as pd
 import mysql.connector
 import matplotlib.pyplot as plt
-
+from datetime import datetime
 # Define the function to add a new student
 
 mydb = mysql.connector.connect(
 host="localhost",
 user='root',
 password='root')
-print(mydb,"connected to server")
+print(mydb, "connected to server")
 print("\n")
-print("-" *100)
-print("                                     Welcome to  School Management System")
-print("-" * 100)
+print("-" * 165)
+print(" " * 68 + "Welcome to School Management System")
+print("-" * 165)
 
-        
 def create_database():
         cursor = mydb.cursor()
         cursor.execute('CREATE DATABASE IF NOT EXISTS school')
@@ -27,21 +26,24 @@ def create_database():
 
 def create_students():
         cursor = mydb.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS students (Id VARCHAR(255),name VARCHAR(255), age VARCHAR(255), gender VARCHAR(255), room_no VARCHAR(255))')
+        cursor.execute('CREATE TABLE IF NOT EXISTS students (Id VARCHAR(255),name VARCHAR(255), age VARCHAR(255), gender VARCHAR(255), Class VARCHAR(255),date_added VARCHAR(255))')
 
+# Define the function to add a new student
 def add_student():
-        id=input("Enter ID of student: ")
-        name = input("Enter student Name: ")
-        age = input("Enter student's age: ")
-        gender = input("Enter student gender: ")
-        room_no = input("Enter student Class: ")
-        cursor = mydb.cursor()
-# Inserting Values
-        sql = "INSERT INTO students (id,name, age, gender, room_no) VALUES (%s,%s, %s, %s, %s)"
-        val = (id,name, age, gender, room_no)
-        cursor.execute(sql, val)
-        mydb.commit()
-        print(cursor.rowcount, "record(s) inserted.")
+    id = input("Enter ID of student: ")
+    name = input("Enter student Name: ")
+    age = input("Enter student's age: ")
+    gender = input("Enter student gender: ")
+    Class = input("Enter student Class: ")
+    now = datetime.now()
+    date_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    cursor = mydb.cursor()
+    # Inserting Values
+    sql = "INSERT INTO students (id, name, age, gender, Class, date_added) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (id, name, age, gender, Class, date_time)
+    cursor.execute(sql, val)
+    mydb.commit()
+    print(cursor.rowcount, "record(s) inserted.")
 
 # Define the function to view student details
 def view_students():
@@ -51,20 +53,22 @@ def view_students():
     print("Press (f) to see in the form of DataFrame")
     print("Press (i) to see the Saprate Index values")
     print("Press (l) to see in the form of list")
-    print("Press (g) to see in the form of Graph")    
+    print("Press (g) to see in the form of Graph b/w Name & Ages ")    
     ch = input("Enter your choice: ")
     if ch=='i':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
-            print("lst1 is:", lst1)
+            print("Id is:", lst1)
             lst2 = [row[1] for row in result_list]
-            print('lst 2 is:', lst2)
+            print('Name is:', lst2)
             lst3 = [row[2] for row in result_list]
-            print('lst 3', lst3)
+            print('Age is', lst3)
             lst4 = [row[3] for row in result_list]
-            print('lst 4 is: ', lst4)
+            print('Gender is: ', lst4)
             lst5 = [row[4] for row in result_list]
-            print('list 5', lst5)            
+            print('Class is', lst5)            
+            lst6 = [row[5] for row in result_list]
+            print('Date_&_Time', lst6)            
     elif ch=='l':
             result_list = [list(row) for row in result]
             print(result_list)           
@@ -75,23 +79,38 @@ def view_students():
             lst3 = [row[2] for row in result_list]
             lst4 = [row[3] for row in result_list]
             lst5 = [row[4] for row in result_list]
-            df = pd.DataFrame({'ID': lst1, 'Name': lst2, 'Age': lst3, 'Gender': lst4, 'Room_No': lst5})
+            lst6 = [row[5] for row in result_list]            
+            df = pd.DataFrame({'ID': lst1, 'Name': lst2, 'Age': lst3, 'Gender': lst4, 'Class': lst5,'Date_&_Time': lst6})
             print(df.to_markdown())
-            
-# Plotting bar chart            
-    elif ch=='g':
+
+    elif ch == 'g':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
             lst2 = [row[1] for row in result_list]
             lst3 = [row[2] for row in result_list]
             lst4 = [row[3] for row in result_list]
             lst5 = [row[4] for row in result_list]
-            df = pd.DataFrame({'ID': lst1, 'Name': lst2, 'Age': lst3, 'Gender': lst4, 'Room_No': lst5})            
-            plt.bar(df['ID'], df['Age'])
-            plt.xlabel('ID')
+            df = pd.DataFrame({'ID': lst1, 'Name': lst2, 'Age': lst3, 'Gender': lst4, 'Class': lst5})
+
+    # Sort the dataframe by Age in ascending order
+            df_sorted = df.sort_values(by='Age')
+
+    # Get the sorted values for 'Name' and 'Age'
+            Name = df_sorted['Name'].tolist()
+            Age = df_sorted['Age'].tolist()
+
+    # Create the bar chart
+            plt.bar(Name, Age, color=['blue', 'green', 'red', 'orange', 'purple'])
+            plt.xlabel('Name')
             plt.ylabel('Age')
-            plt.title('Student Age Distribution')
-            plt.show()            
+            plt.title('Student Ages')
+    
+    # Set the y-axis limits and ticks
+            plt.ylim(0, 18)  # Set the y-axis limits from 0 to 18
+            plt.yticks(range(19))  # Set the y-axis ticks from 0 to 18    
+            plt.show()
+
+
 
 # Define the function to update student details
 def update_student():
@@ -99,10 +118,10 @@ def update_student():
     name = input("Enter student's Name: ")
     age = input("Enter studenlt's age: ")
     gender = input("Enter student's gender: ")
-    room_no = input("Enter student's Class: ")
+    Class = input("Enter student's Class: ")
     cursor = mydb.cursor()
-    sql_up = "update students set name = %s, age = %s, gender = %s, room_no = %s where id = %s"
-    val_up = (name, age, gender, room_no,id)
+    sql_up = "update students set name = %s, age = %s, gender = %s, Class = %s where id = %s"
+    val_up = (name, age, gender, Class,id)
     cursor.execute(sql_up, val_up)
     mydb.commit()
     print(cursor.rowcount, "record(s) updated.")
@@ -120,22 +139,22 @@ def delete_student():
     # CREATING A TABLE
 def create_Staff():
         cursor = mydb.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS Staff(Id varchar(50) primary key,post varchar(50),name varchar(50),salary varchar(50),phone varchar(50))')
+        cursor.execute('CREATE TABLE IF NOT EXISTS Staff(Id varchar(50) primary key,post varchar(50),name varchar(50),salary varchar(50),phone varchar(50),date_added VARCHAR(255))')
 
 # Define the function to add a new staff
 def add_staff():
-    Id=input("Enter staff ID: ")
-    post=input("Enter staff Post: ")
+    Id = input("Enter staff ID: ")
+    post = input("Enter staff Post: ")
     name = input("Enter staff Name: ")
     salary = input("Enter staff Salary: ")
     phone = input("Enter staff Phone no: ")
+    now = datetime.now()
+    date_time = now.strftime("%Y-%m-%d %H:%M:%S")  
     cursor = mydb.cursor()
-
-
-# Inserting Values
-    sqls = "INSERT INTO staff (Id,post,name,salary,phone) VALUES (%s,%s,%s, %s, %s)"
-    vals = (Id,post,name,salary,phone)
-    cursor.execute(sqls, vals)
+    # Inserting Values
+    sql = "INSERT INTO staff (Id, post, name, salary, phone, date_added) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (Id, post, name, salary, phone, date_time)
+    cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "record(s) inserted.")
 
@@ -147,20 +166,22 @@ def view_staff():
     print("Press (f) to see in the form of DataFrame")
     print("Press (i) to see the Saprate Index values")
     print("Press (l) to see in the form of list")
-    print("Press (g) to see in the form of Graph")        
+    print("Press (g) to see in the form of Graph b/w Name & SALARY ")   
     ch = input("Enter your choice: ")
     if ch=='i':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
-            print("lst1 is:", lst1)
+            print("Id is:", lst1)
             lst2 = [row[1] for row in result_list]
-            print('lst 2 is:', lst2)
+            print('Post is:', lst2)
             lst3 = [row[2] for row in result_list]
-            print('lst 3', lst3)
+            print('Name is:', lst3)
             lst4 = [row[3] for row in result_list]
-            print('lst 4 is: ', lst4)
+            print('Salary is: ', lst4)
             lst5 = [row[4] for row in result_list]
-            print('list 5', lst5)           
+            print('Phone_no is: ', lst5)
+            lst6 = [row[5] for row in result_list]
+            print('Date_&_Time is: ', lst6)                  
     elif ch=='l':
             result_list = [list(row) for row in result]
             print(result_list)            
@@ -171,7 +192,8 @@ def view_staff():
             lst3 = [row[2] for row in result_list]
             lst4 = [row[3] for row in result_list]
             lst5 = [row[4] for row in result_list]
-            df=pd.DataFrame({'ID':lst1,'POST':lst2,'NAME':lst3,'SALARY':lst4,'PHONE':lst5})
+            lst6 = [row[5] for row in result_list]                  
+            df=pd.DataFrame({'ID':lst1,'POST':lst2,'NAME':lst3,'SALARY':lst4,'PHONE':lst5,'Date_&_Time': lst6})
             print(df.to_markdown())    
 
         # Plotting pie chart
@@ -214,22 +236,24 @@ def delete_staff():
 # CREATING A TABLE
 def create_fee():
         cursor = mydb.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS fee(SrNo varchar(50) primary key,Name varchar(50),Class varchar(50),Status varchar(50),Quarter varchar(50),PaidAmt varchar(50))')
+        cursor.execute('CREATE TABLE IF NOT EXISTS fee(SrNo varchar(50) primary key,Name varchar(50),Class varchar(50),Status varchar(50),Quarter varchar(50),PaidAmt varchar(50),date_added VARCHAR(255))')
 
 # Define the function to add Fee details
 def fee():
     SrNo = input("Enter Payer's ID: ")
     Name = input("Enter Payer's Name: ")
     Class = input("Enter Payer's Class: ")
-    Status = input("Enter Status(Paid/Due) : ")
-    Quarter = input("Enter Quarter : ")
-    PaidAmt = input("Enter PaidAmt : ")
-    cursor = mydb.cursor()
+    Status = input("Enter Status (Paid/Due): ")
+    Quarter = input("Enter Quarter: ")
+    PaidAmt = input("Enter Paid Amount: ")
+    now = datetime.now()
+    date_time = now.strftime("%Y-%m-%d %H:%M:%S")
     
-    # Inserting Values  
-    msql = "INSERT INTO fee (SrNo, Name, Class, Status, Quarter, PaidAmt) VALUES (%s, %s, %s, %s, %s, %s)"
-    valu = (SrNo, Name, Class, Status, Quarter, PaidAmt)
-    cursor.execute(msql, valu)
+    cursor = mydb.cursor()
+    # Inserting Values
+    sql = "INSERT INTO fee (SrNo, Name, Class, Status, Quarter, PaidAmt, date_added) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (SrNo, Name, Class, Status, Quarter, PaidAmt, date_time)
+    cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "record(s) inserted.")
 
@@ -238,31 +262,32 @@ def view_fee():
     cursor = mydb.cursor()
     cursor.execute("SELECT * FROM fee")
     result = cursor.fetchall()
-    result = cursor.fetchall()
     print("Press (f) to see in the form of DataFrame")
     print("Press (i) to see the Saprate Index values")
     print("Press (l) to see in the form of list")
-    print("Press (g) to see in the form of Graph")        
+    print("Press (g) to see in the form of Graph b/w Name & Paid Amount ")      
     ch = input("Enter your choice: ")
     if ch=='i':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
-            print("lst1 is:", lst1)
+            print("SrNo is:", lst1)
             lst2 = [row[1] for row in result_list]
-            print('lst 2 is:', lst2)
+            print('Name is:', lst2)
             lst3 = [row[2] for row in result_list]
-            print('lst 3', lst3)
+            print('Class is:', lst3)
             lst4 = [row[3] for row in result_list]
-            print('lst 4 is: ', lst4)
+            print('Status is: ', lst4)
             lst5 = [row[4] for row in result_list]
-            print('list 5', lst5)
+            print('Quarter is:', lst5)
             lst6 = [row[5] for row in result_list]
-            print('list 6', lst6)    
+            print('PaidAmt is:', lst6)    
             lst7 = [row[6] for row in result_list]
-            print('lst 7 is: ',lst7)                        
+            print('Date_&_Time is:', lst7)
+            
     elif ch=='l':
             result_list = [list(row) for row in result]
-            print(result_list)            
+            print(result_list)
+            
     elif ch=='f':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
@@ -271,12 +296,13 @@ def view_fee():
             lst4 = [row[3] for row in result_list]
             lst5 = [row[4] for row in result_list]
             lst6 = [row[5] for row in result_list]
-            lst7 = [row[6] for row in result_list]  
-            df=pd.DataFrame({'SrNo':lst1,'Name':lst2,'Class':lst3,'':lst4,'Status':lst5,'Quarter':lst6, 'PaidAmt':lst7})
+            lst7 = [row[6] for row in result_list]            
+            df=pd.DataFrame({'SrNo':lst1,'Name':lst2,'Class':lst3,'Status':lst4,'Quarter':lst5,'PaidAmt':lst6,'Date_&_Time': lst7 })
             print(df.to_markdown())
-            
+ #################################################################           
         # Plotting line chart
-    elif ch=='g':
+# Plotting line chart
+    elif ch == 'g':
             result_list = [list(row) for row in result]
             lst1 = [row[0] for row in result_list]
             lst2 = [row[1] for row in result_list]
@@ -284,13 +310,18 @@ def view_fee():
             lst4 = [row[3] for row in result_list]
             lst5 = [row[4] for row in result_list]
             lst6 = [row[5] for row in result_list]
-            lst7 = [row[6] for row in result_list]  
-            df=pd.DataFrame({'SrNo':lst1,'Name':lst2,'Class':lst3,'':lst4,'Status':lst5,'Quarter':lst6, 'PaidAmt':lst7})            
-            plt.plot(df['Quarter'], df['PaidAmt'])
-            plt.xlabel('Quarter')
+            df=pd.DataFrame({'SrNo':lst1,'Name':lst2,'Class':lst3,'Status':lst4,'Quarter':lst5,'PaidAmt':lst6 })
+    
+    # Sort the DataFrame by Quarter in ascending order
+            df.sort_values(by='PaidAmt')    
+            Name = df['Name']
+            PaidAmt = df['PaidAmt']    
+            plt.plot(Name, PaidAmt)
+            plt.xlabel('Name')
             plt.ylabel('Paid Amount')
             plt.title('Fee Payment Over Quarters')
             plt.show()
+
 # Define the function to update Fee details
 def update_fee():
     SrNo = input("Enter student SrNo: ")
@@ -419,114 +450,3 @@ def getchoice():
 getchoice()
 # Disconnecting from the server =>
 mydb.close()
-
-'''
-def fetch_id():
-        sql="select id from students"
-        val=(id,)
-        cursor = mydb.cursor()
-        cursor.execute(sql,val)
-        result_id = cursor.fetchall()
-        lst_id=[]
-        for row in result_id:
-                lst_id.append(row)
-                print(lst_id)
-def fetch_name():
-        sql="select name from students"
-        val=(name,)
-        cursor = mydb.cursor()
-        cursor.execute(sql,val)
-        result_name = cursor.fetchall()
-        lst_name=[]
-        for row in result:
-                lst_name.append(row)
-                print(result_name)
-def fetch_age():
-        sql="select age from students"
-        val=(age,)
-        cursor = mydb.cursor()
-        cursor.execute(sql,val)
-        result_age = cursor.fetchall()
-          lst_age=[]
-          for row in result_age:
-                lst_age.append(row)
-                print(lst_age)
-def fetch_gender():
-        sql="select gender from students"
-        val=(gender,)
-        cursor = mydb.cursor()
-        cursor.execute(sql,val)
-        result_gen = cursor.fetchall()
-        lst_gender=[]
-        for row in result:
-            lst_gender.append(row)
-            print(lst_gender)
-def fetch_room():
-        sql="select room_no from students"
-        val=(room_no,)
-        cursor.execute(sql,val)
-        result = cursor.fetchall()
-        lst_room=[]
-        for row in result:
-            lst_room.append(row)
-            print(lst_room)
-
-# Define the function to view student details
-def view_students():
-    cursor = mydb.cursor()
-    cursor.execute("SELECT * FROM students")
-    result = cursor.fetchall()
-    for row in result:
-        result_list = [list(row) for row in result]
-    print(result_list)
-    lst1=[result_list[0][0],result_list[1][0],result_list[2][0],result_list[3][0],result_list[4][0]]
-    print("lst1 is:",lst1)
-    lst2=[result_list[0][1],result_list[1][1],result_list[2][1],result_list[3][1],result_list[4][1]]
-    print('lst 2 is:',lst2)
-    lst3=[result_list[0][2],result_list[1][2],result_list[2][2],result_list[3][2],result_list[4][2]]
-    print('lst 3',lst3)
-    lst4=[result_list[0][3],result_list[1][3],result_list[2][3],result_list[3][3],result_list[4][3]]
-    print('lst 4 is: ',lst4)
-    lst5=[result_list[0][4],result_list[1][4],result_list[2][4],result_list[3][4],result_list[4][4]]
-    print('list 5',lst5)
-    df=pd.DataFrame({'ID':lst1,'Name':lst2,'Age':lst3,'Gender':lst4,'Room_No':lst5})
-    print(df.to_markdown())
-
-
-    result_list = [list(row) for row in result]
-    print(result_list)
-    lst1 = [row[0] for row in result_list]
-    print("lst1 is:", lst1)
-    lst2 = [row[1] for row in result_list]
-    print('lst 2 is:', lst2)
-    lst3 = [row[2] for row in result_list]
-    print('lst 3', lst3)
-    lst4 = [row[3] for row in result_list]
-    print('lst 4 is: ', lst4)
-    lst5 = [row[4] for row in result_list]
-    print('list 5', lst5)
-    df=pd.DataFrame({'ID':lst1,'POST':lst2,'NAME':lst3,'SALARY':lst4,'PHONE':lst5})
-    print(df.to_markdown())
-
-
-    result_list = [list(row) for row in result]
-    print(result_list)
-    lst1 = [row[0] for row in result_list]
-    print("lst1 is:", lst1)
-    lst2 = [row[1] for row in result_list]
-    print('lst 2 is:', lst2)
-    lst3 = [row[2] for row in result_list]
-    print('lst 3', lst3)
-    lst4 = [row[3] for row in result_list]
-    print('lst 4 is: ', lst4)
-    lst5 = [row[4] for row in result_list]
-    print('list 5', lst5)
-    lst6 = [row[5] for row in result_list]
-    print('list 6', lst6)    
-    lst7 = [row[6] for row in result_list]
-    print('lst 7 is: ',lst7)
-    df=pd.DataFrame({'SrNo':lst1,'Name':lst2,'Class':lst3,'':lst4,'Status':lst5,'Quarter':lst6, 'PaidAmt':lst7})
-    print(df.to_markdown())
-# (SrNo,Name,Class,Status,Quarter,PaidAmt) 
-'''
-
