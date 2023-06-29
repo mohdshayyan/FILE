@@ -10,7 +10,6 @@ from PIL import Image
 from datetime import datetime
 
 
-
 mydb = mysql.connector.connect(
 host="localhost",
 user='root',
