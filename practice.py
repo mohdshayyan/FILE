@@ -1,3 +1,10 @@
+'''
+GitHub pass->
+mohdshayyan1@gmail.com
+shayyanpathan830
+'''
+
+
 import pandas as pd
 
 data={'A':[67,89,90,95],'B':[20,50,60,94],'C':[70,80,90,60],'D':[80,90,59,85]}
