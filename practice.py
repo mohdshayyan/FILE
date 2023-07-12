@@ -3,55 +3,49 @@ GitHub pass->
 mohdshayyan1@gmail.com
 shayyanpathan830
 '''
-
-
 import pandas as pd
 
-data={'A':[67,89,90,95],'B':[20,50,60,94],'C':[70,80,90,60],'D':[80,90,59,85]}
-idx=['Physics','Biology','English','Chemistry']
-df=pd.DataFrame(data,index=idx)
-#-------------------------------------------------------------------------
-# Adding a col to dataFrame
-#df['E']=[80,90,70,60]
-# OR
-# Adding same values a col to dataFrame
-#df['E']=99
-#-------------------------------------------------------------------------
-# Adding a Row to DataFrame
-#df.loc['IP']=[80,90,70,60]
-# OR
-#df.loc['IP']=99
-#-------------------------------------------------------------------------
-#Set all the Values to zero
-#df[:]=0
-#-------------------------------------------------------------------------
-# To Drop a Row From DataFrame:
-#df=df.drop('English',axis=0) #It is used to drop duplicate Row also:
-# OR
-# To Drop a col. From DataFrame:
-#df=df.drop('D',axis=1)
-#-------------------------------------------------------------------------
-# To Rename Index(Rows)->
-#df=df.rename({'Physics':'Phy'}) #,axis='index')
-# To Rename Columns->
-#df=df.rename({'A': 'a1'},axis='columns')
-#-------------------------------------------------------------------------
-# Label Based indexing->
-#df=df.loc['Biology']
-# Boolean Based indexing->
-#df=df.loc['Biology']>10
-#-------------------------------------------------------------------------
+#--------------------------------------------------------- Series -------------------------------------------------------------------
 
-#-------------------------------------------------------------------------
-# Print the DataFrame
+#x=pd.Series([10,20,30],index=['kam','Jam','tam'])#(['kam','Jam','tam'],index=[10,20,30])     #,dtype=np.object_)
+# tam ko 35 pr:-->
+#x['tam']=35
+# Modify full index in series:-->
+#x.index=['k','J','t']
+#print(x)
+# Slicing:-->
+#x=x[x>10]
+#print(x)
+'''
+df[20]=25
+df=df.T
+df=df.drop(10,axis=0)
+df[25]='Jam'
 print(df)
-#df.to_csv('Pd')
+'''
+#Naming index:-->
+#x.index.name='Name'
+#x.name='Result'
+#print(x)
 
+#--------------------------------------------------------- DataFrame -------------------------------------------------------------------
 
+'''idx=['Sub1','Sub2','Sub3']
+data={'A':[1,2,3],'B':[4,5,6],'C':[7,8,9]}
+df=pd.DataFrame(data,index=idx)'''
+# Add a Column in df:-->
+#df['D']=[10,11,12]
+# Add a Row in df:-->
+#df.loc['Sub4']=[10,11,12]
 
+# Drop a Column in df:-->
+#df=df.drop(['C'],axis=1)
+# Drop a Row in df:-->
+#df=df.drop(['Sub3'],axis=0)
 
+# Rename a Column in df:-->
+#df=df.rename({'A':'A1'},axis='columns')
+# Rename a Row(Index) in df:-->
+#df=df.rename({'Sub3':'S3'})#,axis='index')
 
-
-
-
-
+###print(df)
