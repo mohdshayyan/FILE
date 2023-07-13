@@ -1,0 +1,41 @@
+# ADD A COLUMN
+ALTER TABLE TABLE_NAME ADD(COLUMN_NAME numeric());
+# MODIFY A TABLE-->
+ALTER TABLE TABLE_NAME MODIFY COLUMN_NAME D_TYPE;
+
+# DROP A COLUMN--> 
+ALTER TABLE TABLE_NAME DROP COLUMN COLUMN_NAME;
+
+
+# GROUP BY-->
+SELECT column_name
+FROM table_name
+WHERE condition
+GROUP BY column_name
+ORDER BY column_name;
+
+       OR
+
+SELECT COUNT
+(CustomerID),
+Country
+FROM Customers
+GROUP BY Country
+ORDER BY 
+COUNT(CustomerID) DESC;
+
+
+
+# LIKE-->
+SELECT column1, column2, ...
+FROM table_name
+WHERE columnN LIKE pattern;
+
+
+
+
+# ADD A PRIMARY KEY-->
+ALTER TABLE TABLE_NAME ADD PRIMARY KEY(COLUMN_NAME);
+
+# ADD A FOREIGN KEY-->
+CREATE TABLE Stream(StCode VARCHAR(5) PRIMARY KEY,Stream VARCHAR(20),foreign key (Stcode) references STUDENT(Stcode));  
