@@ -49,3 +49,31 @@ df=pd.DataFrame(data,index=idx)'''
 #df=df.rename({'Sub3':'S3'})#,axis='index')
 
 ###print(df)
+
+#----------------------------------
+'''
+
+
+data = {2014: [100.5, 150.8, 200.9, 30000, 40000],
+        2015: [12000, 18000, 22000, 30000, 45000],
+        2016: [20000, 50000, 70000, 100000, 125000],
+        2017: [50000, 60000, 70000, 80000, 90000]}
+index = ['Madhu', 'kusum', 'kinshuk', 'Ankit', 'Shuriti']
+Sales = pd.DataFrame(data, index=index)
+
+Sales2 = pd.DataFrame({2018: [50000]}, index=['Neha'])  # Corrected the dimensions of Sales2
+Sales = Sales.append(Sales2)
+print(Sales)
+2
+print(Sales.T)
+3
+print(Sales[2017])
+4
+selected_sales = Sales.loc[['Madhu', 'Ankit'], [2017, 2018]]  
+print(selected_sales)
+5
+selected_sales = Sales.loc[['Shruti'], [2016]]  
+print(selected_sales)
+
+
+'''
