@@ -75,5 +75,10 @@ print(selected_sales)
 selected_sales = Sales.loc[['Shruti'], [2016]]  
 print(selected_sales)
 
+# 6(f)
+salesman_data = [196.2, 37800, 52000, 78438, 38852]
+years = [2014, 2015, 2016, 2017, 2018]
+Sales.loc['Sumeet'] = salesman_data
+print(Sales)
 
 '''
