@@ -81,4 +81,31 @@ years = [2014, 2015, 2016, 2017, 2018]
 Sales.loc['Sumeet'] = salesman_data
 print(Sales)
 
+# g
+# Delete data for the year 2014
+Sales = Sales.drop(columns=[2014])
+
+print(Sales)
+
+# h
+# Delete data for the salesman "kinshuk"
+Sales = Sales.drop('kinshuk')
+
+print(Sales)
+
+# i
+# Change the names "Ankit" to "Vivaan" and "Madhu" to "Shailesh"
+Sales = Sales.rename(index={'Ankit': 'Vivaan', 'Madhu': 'Shailesh'})
+print(Sales)
+
+# J
+# Update the sales made by "Shailesh" in 2018 to 100000
+Sales.loc['Shailesh', 2018] = 100000
+print(Sales)
+
+# K 
+# Write DataFrame values to a CSV file without row labels and column labels
+Sales.to_csv('salesFigures.csv', header=False, index=False)
+print("Sales data has been written to salesFigures.csv")
+
 '''
