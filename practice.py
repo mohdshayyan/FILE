@@ -1,5 +1,5 @@
 '''
-GitHub pass->
+pass->
 mohdshayyan1@gmail.com
 shayyanpathan830
 '''
