@@ -71,8 +71,9 @@ print(Sales[2017])
 #d)
 selected_sales = Sales.loc[['Madhu', 'Ankit'], [2017, 2018]]  
 print(selected_sales)
+
 #e)
-selected_sales = Sales.loc[['Shruti'], [2016]]  
+selected_sales = Sales.loc[['Shuriti'], [2016]]
 print(selected_sales)
 
 #(f)
@@ -102,8 +103,7 @@ print(Sales)
 Sales.loc['Shailesh', 2018] = 100000
 print(Sales)
 
-# (K)write the values of dataframe Sales to a comma separated file salesFigures.csv on the disk. do not write the row lables and column lables.
-# Write DataFrame values to a CSV file without row labels and column labels
+# K) write the values of dataframe Sales to a comma separated file salesFigures.csv on the disk. do not write the row lables and column lables.
 Sales.to_csv('salesFigures.csv', header=False, index=False)
 print("Sales data has been written to salesFigures.csv")
 
