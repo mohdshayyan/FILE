@@ -62,20 +62,20 @@ index = ['Madhu', 'kusum', 'kinshuk', 'Ankit', 'Shuriti']
 Sales = pd.DataFrame(data, index=index)
 
 Sales2 = pd.DataFrame({2018: [50000]}, index=['Neha'])  # Corrected the dimensions of Sales2
-Sales = Sales.append(Sales2)
+Sales = Sales._append(Sales2)
 print(Sales)
-2
+#b)
 print(Sales.T)
-3
+#c)
 print(Sales[2017])
-4
+#d)
 selected_sales = Sales.loc[['Madhu', 'Ankit'], [2017, 2018]]  
 print(selected_sales)
-5
+#e)
 selected_sales = Sales.loc[['Shruti'], [2016]]  
 print(selected_sales)
 
-# 6(f)
+#(f)
 salesman_data = [196.2, 37800, 52000, 78438, 38852]
 years = [2014, 2015, 2016, 2017, 2018]
 Sales.loc['Sumeet'] = salesman_data
