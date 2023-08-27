@@ -6,7 +6,7 @@
 import pandas as pd
 import mysql.connector
 import matplotlib.pyplot as plt
-from PIL import Image
+#from PIL import Image
 from datetime import datetime
 
 
@@ -22,7 +22,7 @@ print("-" * 165)
 
 
 
-
+'''
 # Load the background image
 background_image = Image.open(r'C:\Users\hello\Desktop\asc.jpg')
 
@@ -34,7 +34,7 @@ ax.imshow(background_image, aspect='auto', extent=(0, 10, 0, 6))
 plt.title("--------- Welcome To All Saint's Church School ---------")
 # Display the plot
 plt.show()
-
+'''
 
 def create_database():
         cursor = mydb.cursor()
